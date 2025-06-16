@@ -3,4 +3,4 @@
 .github/workflows/ci.yml
 
 tests/custom.test.ts
-tests/live_api.test.ts
+tests/liveApi.test.ts
