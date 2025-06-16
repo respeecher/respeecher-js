@@ -1,6 +1,6 @@
 {
     "name": "@respeecher/respeecher-js",
-    "version": "0.0.80",
+    "version": "0.1.0",
     "private": false,
     "repository": "https://github.com/respeecher/respeecher-js",
     "type": "commonjs",

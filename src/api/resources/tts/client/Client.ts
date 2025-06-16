@@ -70,7 +70,8 @@ export class Tts {
             headers: {
                 "X-Fern-Language": "JavaScript",
                 "X-Fern-SDK-Name": "@respeecher/respeecher-js",
-                "X-Fern-SDK-Version": "0.0.80",
+                "X-Fern-SDK-Version": "0.1.0",
+                "User-Agent": "@respeecher/respeecher-js/0.1.0",
                 "X-Fern-Runtime": core.RUNTIME.type,
                 "X-Fern-Runtime-Version": core.RUNTIME.version,
                 ...(await this._getCustomAuthorizationHeaders()),
@@ -140,7 +141,8 @@ export class Tts {
             headers: {
                 "X-Fern-Language": "JavaScript",
                 "X-Fern-SDK-Name": "@respeecher/respeecher-js",
-                "X-Fern-SDK-Version": "0.0.80",
+                "X-Fern-SDK-Version": "0.1.0",
+                "User-Agent": "@respeecher/respeecher-js/0.1.0",
                 "X-Fern-Runtime": core.RUNTIME.type,
                 "X-Fern-Runtime-Version": core.RUNTIME.version,
                 ...(await this._getCustomAuthorizationHeaders()),
