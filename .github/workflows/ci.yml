@@ -27,4 +27,9 @@ jobs:
         uses: actions/setup-node@v3
 
       - name: Compile
-        run: yarn && yarn test    
+        run: yarn
+
+      - name: Test
+        run: yarn test
+        env:
+          RESPEECHER_API_KEY: ${{ secrets.RESPEECHER_API_KEY }}
