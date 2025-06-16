@@ -1,8 +1,8 @@
 {
-    "name": "respeecher",
-    "version": "0.0.73",
+    "name": "@respeecher/respeecher-js",
+    "version": "0.0.78",
     "private": false,
-    "repository": "https://github.com/respeecher/respeecher-api-node",
+    "repository": "https://github.com/respeecher/respeecher-js",
     "type": "commonjs",
     "main": "./dist/cjs/index.js",
     "module": "./dist/esm/index.mjs",

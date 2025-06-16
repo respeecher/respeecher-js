@@ -56,8 +56,8 @@ export class Voices {
             method: "GET",
             headers: {
                 "X-Fern-Language": "JavaScript",
-                "X-Fern-SDK-Name": "respeecher",
-                "X-Fern-SDK-Version": "0.0.73",
+                "X-Fern-SDK-Name": "@respeecher/respeecher-js",
+                "X-Fern-SDK-Version": "0.0.78",
                 "X-Fern-Runtime": core.RUNTIME.type,
                 "X-Fern-Runtime-Version": core.RUNTIME.version,
                 ...(await this._getCustomAuthorizationHeaders()),
