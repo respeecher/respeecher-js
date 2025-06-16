@@ -2,5 +2,5 @@
 
 .github/workflows/ci.yml
 
-tests/custom.test.js
-tests/live_api.test.js
+tests/custom.test.ts
+tests/live_api.test.ts
