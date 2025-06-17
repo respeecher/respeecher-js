@@ -4,6 +4,7 @@
 
 import * as environments from "./environments.js";
 import * as core from "./core/index.js";
+import { mergeHeaders } from "./core/headers.js";
 import { Tts } from "./api/resources/tts/client/Client.js";
 import { Voices } from "./api/resources/voices/client/Client.js";
 
@@ -13,6 +14,8 @@ export declare namespace RespeecherApiClient {
         /** Specify a custom URL to connect the client to. */
         baseUrl?: core.Supplier<string>;
         apiKey?: core.Supplier<string>;
+        /** Additional headers to include in requests. */
+        headers?: Record<string, string | core.Supplier<string | undefined> | undefined>;
     }
 
     export interface RequestOptions {
@@ -23,15 +26,30 @@ export declare namespace RespeecherApiClient {
         /** A hook to abort the request. */
         abortSignal?: AbortSignal;
         /** Additional headers to include in the request. */
-        headers?: Record<string, string>;
+        headers?: Record<string, string | core.Supplier<string | undefined> | undefined>;
     }
 }
 
 export class RespeecherApiClient {
+    protected readonly _options: RespeecherApiClient.Options;
     protected _tts: Tts | undefined;
     protected _voices: Voices | undefined;
 
-    constructor(protected readonly _options: RespeecherApiClient.Options = {}) {}
+    constructor(_options: RespeecherApiClient.Options = {}) {
+        this._options = {
+            ..._options,
+            headers: mergeHeaders(
+                {
+                    "X-Fern-Language": "JavaScript",
+                    "X-Fern-SDK-Name": "@respeecher/respeecher-js",
+                    "X-Fern-SDK-Version": "0.0.84",
+                    "X-Fern-Runtime": core.RUNTIME.type,
+                    "X-Fern-Runtime-Version": core.RUNTIME.version,
+                },
+                _options?.headers,
+            ),
+        };
+    }
 
     public get tts(): Tts {
         return (this._tts ??= new Tts(this._options));

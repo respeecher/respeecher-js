@@ -6,6 +6,7 @@ import * as environments from "../../../../environments.js";
 import * as core from "../../../../core/index.js";
 import * as RespeecherApi from "../../../index.js";
 import * as stream from "stream";
+import { mergeHeaders, mergeOnlyDefinedHeaders } from "../../../../core/headers.js";
 import urlJoin from "url-join";
 import * as errors from "../../../../errors/index.js";
 import * as qs from "qs";
@@ -17,6 +18,8 @@ export declare namespace Tts {
         /** Specify a custom URL to connect the client to. */
         baseUrl?: core.Supplier<string>;
         apiKey?: core.Supplier<string>;
+        /** Additional headers to include in requests. */
+        headers?: Record<string, string | core.Supplier<string | undefined> | undefined>;
     }
 
     export interface RequestOptions {
@@ -27,7 +30,7 @@ export declare namespace Tts {
         /** A hook to abort the request. */
         abortSignal?: AbortSignal;
         /** Additional headers to include in the request. */
-        headers?: Record<string, string>;
+        headers?: Record<string, string | core.Supplier<string | undefined> | undefined>;
     }
 
     export interface ConnectArgs {
@@ -41,7 +44,11 @@ export declare namespace Tts {
 }
 
 export class Tts {
-    constructor(protected readonly _options: Tts.Options = {}) {}
+    protected readonly _options: Tts.Options;
+
+    constructor(_options: Tts.Options = {}) {
+        this._options = _options;
+    }
 
     /**
      * The easiest way to generate text-to-speech audio. Not suitable for latency-sensitive applications.
@@ -67,15 +74,11 @@ export class Tts {
                 "/tts/bytes",
             ),
             method: "POST",
-            headers: {
-                "X-Fern-Language": "JavaScript",
-                "X-Fern-SDK-Name": "respeecher-js",
-                "X-Fern-SDK-Version": "0.0.81",
-                "X-Fern-Runtime": core.RUNTIME.type,
-                "X-Fern-Runtime-Version": core.RUNTIME.version,
-                ...(await this._getCustomAuthorizationHeaders()),
-                ...requestOptions?.headers,
-            },
+            headers: mergeHeaders(
+                this._options?.headers,
+                mergeOnlyDefinedHeaders({ ...(await this._getCustomAuthorizationHeaders()) }),
+                requestOptions?.headers,
+            ),
             contentType: "application/json",
             requestType: "json",
             body: request,
@@ -137,15 +140,11 @@ export class Tts {
                 "/tts/sse",
             ),
             method: "POST",
-            headers: {
-                "X-Fern-Language": "JavaScript",
-                "X-Fern-SDK-Name": "respeecher-js",
-                "X-Fern-SDK-Version": "0.0.81",
-                "X-Fern-Runtime": core.RUNTIME.type,
-                "X-Fern-Runtime-Version": core.RUNTIME.version,
-                ...(await this._getCustomAuthorizationHeaders()),
-                ...requestOptions?.headers,
-            },
+            headers: mergeHeaders(
+                this._options?.headers,
+                mergeOnlyDefinedHeaders({ ...(await this._getCustomAuthorizationHeaders()) }),
+                requestOptions?.headers,
+            ),
             contentType: "application/json",
             requestType: "json",
             body: request,
@@ -203,12 +202,12 @@ export class Tts {
         };
         websocketHeaders = {
             ...websocketHeaders,
-            ...args.headers,
+            ...args["headers"],
         };
         const socket = new core.ReconnectingWebSocket(
-            `${(await core.Supplier.get(this._options.baseUrl)) ?? ((await core.Supplier.get(this._options.environment)) ?? environments.RespeecherApiEnvironment.PublicEnRt).ws}/tts/websocket?${qs.stringify(queryParams, { arrayFormat: "repeat" })}`,
+            `${(await core.Supplier.get(this._options["baseUrl"])) ?? ((await core.Supplier.get(this._options["environment"])) ?? environments.RespeecherApiEnvironment.PublicEnRt).ws}/tts/websocket?${qs.stringify(queryParams, { arrayFormat: "repeat" })}`,
             [],
-            { debug: args.debug ?? false, maxRetries: args.reconnectAttempts ?? 30 },
+            { debug: args["debug"] ?? false, maxRetries: args["reconnectAttempts"] ?? 30 },
             websocketHeaders,
         );
         return new TtsSocket({ socket });

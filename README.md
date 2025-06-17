@@ -1,14 +1,14 @@
 # Respeecher TypeScript Library
 
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2Frespeecher%2Frespeecher-js)
-[![npm shield](https://img.shields.io/npm/v/respeecher-js)](https://www.npmjs.com/package/respeecher-js)
+[![npm shield](https://img.shields.io/npm/v/@respeecher/respeecher-js)](https://www.npmjs.com/package/@respeecher/respeecher-js)
 
 The Respeecher TypeScript library provides convenient access to the Respeecher API from TypeScript.
 
 ## Installation
 
 ```sh
-npm i -s respeecher-js
+npm i -s @respeecher/respeecher-js
 ```
 
 ## Reference
@@ -20,7 +20,7 @@ A full reference for this library is available [here](https://github.com/respeec
 Instantiate and use the client with the following:
 
 ```typescript
-import { RespeecherApiClient } from "respeecher-js";
+import { RespeecherApiClient } from "@respeecher/respeecher-js";
 
 const client = new RespeecherApiClient({ apiKey: "YOUR_API_KEY" });
 await client.tts.bytes({
@@ -37,7 +37,7 @@ When the API returns a non-success status code (4xx or 5xx response), a subclass
 will be thrown.
 
 ```typescript
-import { RespeecherApiError } from "respeecher-js";
+import { RespeecherApiError } from "@respeecher/respeecher-js";
 
 try {
     await client.tts.bytes(...);
@@ -137,7 +137,7 @@ The SDK provides a way for you to customize the underlying HTTP client / Fetch f
 unsupported environment, this provides a way for you to break glass and ensure the SDK works.
 
 ```typescript
-import { RespeecherApiClient } from "respeecher-js";
+import { RespeecherApiClient } from "@respeecher/respeecher-js";
 
 const client = new RespeecherApiClient({
     ...
