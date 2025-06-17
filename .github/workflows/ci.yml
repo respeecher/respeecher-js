@@ -36,6 +36,6 @@ jobs:
         run: yarn test:wire
 
       - name: Live API tests
-        run: jest tests/liveApi.test.ts
+        run: yarn jest tests/liveApi.test.ts
         env:
           RESPEECHER_API_KEY: ${{ secrets.RESPEECHER_API_KEY }}
