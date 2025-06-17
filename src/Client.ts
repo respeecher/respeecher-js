@@ -42,7 +42,7 @@ export class RespeecherApiClient {
                 {
                     "X-Fern-Language": "JavaScript",
                     "X-Fern-SDK-Name": "@respeecher/respeecher-js",
-                    "X-Fern-SDK-Version": "0.0.84",
+                    "X-Fern-SDK-Version": "0.0.85",
                     "X-Fern-Runtime": core.RUNTIME.type,
                     "X-Fern-Runtime-Version": core.RUNTIME.version,
                 },
