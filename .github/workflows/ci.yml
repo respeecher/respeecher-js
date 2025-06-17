@@ -29,7 +29,13 @@ jobs:
       - name: Compile
         run: yarn
 
-      - name: Test
+      - name: Unit tests
         run: yarn test
+
+      - name: Wire tests
+        run: yarn test:wire
+
+      - name: Live API tests
+        run: jest tests/liveApi.test.ts
         env:
           RESPEECHER_API_KEY: ${{ secrets.RESPEECHER_API_KEY }}
