@@ -1,7 +1,7 @@
-import { RespeecherApiClient } from "../src";
+import { RespeecherClient } from "../src";
 
 describe("Test the client against the live API", () => {
-    const client = new RespeecherApiClient();
+    const client = new RespeecherClient();
 
     it("should return a non-empty list of voices", async () => {
         const voices = await client.voices.list();
@@ -22,7 +22,7 @@ describe("Test the client against the live API", () => {
 
         await socket.waitForOpen();
         await socket.sendGenerate({
-            context_id: contextId,
+            contextId,
             ...sampleRequest,
         });
 
@@ -31,7 +31,7 @@ describe("Test the client against the live API", () => {
 
             socket.on("message", (message) => {
                 if (message.type === "chunk") {
-                    expect(message.context_id).toBe(contextId);
+                    expect(message.contextId).toBe(contextId);
 
                     const audio = Buffer.from(message.data, "base64");
                     const sampleWidth = 4;
