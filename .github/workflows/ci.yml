@@ -26,8 +26,19 @@ jobs:
       - name: Set up node
         uses: actions/setup-node@v3
 
-      - name: Compile
-        run: yarn && yarn test    
+      - name: Install dependencies
+        run: yarn
+
+      - name: Unit tests
+        run: yarn test
+
+      - name: Wire tests
+        run: yarn test:wire
+
+      - name: Live API tests
+        run: yarn jest tests/liveApi.test.ts
+        env:
+          RESPEECHER_API_KEY: ${{ secrets.RESPEECHER_API_KEY }}
 
   publish:
     needs: [ compile, test ]
