@@ -5,7 +5,7 @@
 import * as core from "../core/index.js";
 import { toJson } from "../core/json.js";
 
-export class RespeecherApiError extends Error {
+export class RespeecherError extends Error {
     public readonly statusCode?: number;
     public readonly body?: unknown;
     public readonly rawResponse?: core.RawResponse;
@@ -22,7 +22,7 @@ export class RespeecherApiError extends Error {
         rawResponse?: core.RawResponse;
     }) {
         super(buildMessage({ message, statusCode, body }));
-        Object.setPrototypeOf(this, RespeecherApiError.prototype);
+        Object.setPrototypeOf(this, RespeecherError.prototype);
         this.statusCode = statusCode;
         this.body = body;
         this.rawResponse = rawResponse;

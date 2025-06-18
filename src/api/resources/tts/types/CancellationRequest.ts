@@ -4,6 +4,6 @@
 
 export interface CancellationRequest {
     /** Use different context IDs for different generations over one WebSocket connection. */
-    context_id: string;
+    contextId: string;
     cancel: true;
 }

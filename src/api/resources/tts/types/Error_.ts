@@ -6,6 +6,6 @@ export interface Error_ {
     /** Error message. */
     error: string;
     /** HTTP status code most appropriate for this error. */
-    status_code: number;
-    context_id?: string;
+    statusCode: number;
+    contextId?: string;
 }

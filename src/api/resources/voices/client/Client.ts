@@ -4,14 +4,15 @@
 
 import * as environments from "../../../../environments.js";
 import * as core from "../../../../core/index.js";
-import * as RespeecherApi from "../../../index.js";
+import * as Respeecher from "../../../index.js";
 import { mergeHeaders, mergeOnlyDefinedHeaders } from "../../../../core/headers.js";
 import urlJoin from "url-join";
+import * as serializers from "../../../../serialization/index.js";
 import * as errors from "../../../../errors/index.js";
 
 export declare namespace Voices {
     export interface Options {
-        environment?: core.Supplier<environments.RespeecherApiEnvironment | environments.RespeecherApiEnvironmentUrls>;
+        environment?: core.Supplier<environments.RespeecherEnvironment | environments.RespeecherEnvironmentUrls>;
         /** Specify a custom URL to connect the client to. */
         baseUrl?: core.Supplier<string>;
         apiKey?: core.Supplier<string>;
@@ -46,17 +47,17 @@ export class Voices {
      * @example
      *     await client.voices.list()
      */
-    public list(requestOptions?: Voices.RequestOptions): core.HttpResponsePromise<RespeecherApi.Voice[]> {
+    public list(requestOptions?: Voices.RequestOptions): core.HttpResponsePromise<Respeecher.Voice[]> {
         return core.HttpResponsePromise.fromPromise(this.__list(requestOptions));
     }
 
-    private async __list(requestOptions?: Voices.RequestOptions): Promise<core.WithRawResponse<RespeecherApi.Voice[]>> {
+    private async __list(requestOptions?: Voices.RequestOptions): Promise<core.WithRawResponse<Respeecher.Voice[]>> {
         const _response = await core.fetcher({
             url: urlJoin(
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     (
                         (await core.Supplier.get(this._options.environment)) ??
-                        environments.RespeecherApiEnvironment.PublicEnRt
+                        environments.RespeecherEnvironment.PublicEnRt
                     ).base,
                 "/voices",
             ),
@@ -71,11 +72,20 @@ export class Voices {
             abortSignal: requestOptions?.abortSignal,
         });
         if (_response.ok) {
-            return { data: _response.body as RespeecherApi.Voice[], rawResponse: _response.rawResponse };
+            return {
+                data: serializers.voices.list.Response.parseOrThrow(_response.body, {
+                    unrecognizedObjectKeys: "passthrough",
+                    allowUnrecognizedUnionMembers: true,
+                    allowUnrecognizedEnumValues: true,
+                    skipValidation: true,
+                    breadcrumbsPrefix: ["response"],
+                }),
+                rawResponse: _response.rawResponse,
+            };
         }
 
         if (_response.error.reason === "status-code") {
-            throw new errors.RespeecherApiError({
+            throw new errors.RespeecherError({
                 statusCode: _response.error.statusCode,
                 body: _response.error.body,
                 rawResponse: _response.rawResponse,
@@ -84,15 +94,15 @@ export class Voices {
 
         switch (_response.error.reason) {
             case "non-json":
-                throw new errors.RespeecherApiError({
+                throw new errors.RespeecherError({
                     statusCode: _response.error.statusCode,
                     body: _response.error.rawBody,
                     rawResponse: _response.rawResponse,
                 });
             case "timeout":
-                throw new errors.RespeecherApiTimeoutError("Timeout exceeded when calling GET /voices.");
+                throw new errors.RespeecherTimeoutError("Timeout exceeded when calling GET /voices.");
             case "unknown":
-                throw new errors.RespeecherApiError({
+                throw new errors.RespeecherError({
                     message: _response.error.errorMessage,
                     rawResponse: _response.rawResponse,
                 });

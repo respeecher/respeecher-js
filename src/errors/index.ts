@@ -1,2 +1,2 @@
-export { RespeecherApiError } from "./RespeecherApiError.js";
-export { RespeecherApiTimeoutError } from "./RespeecherApiTimeoutError.js";
+export { RespeecherError } from "./RespeecherError.js";
+export { RespeecherTimeoutError } from "./RespeecherTimeoutError.js";

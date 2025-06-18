@@ -51,7 +51,7 @@ await client.tts.bytes({
 <dl>
 <dd>
 
-**request:** `RespeecherApi.OfflineGenerationRequest`
+**request:** `Respeecher.OfflineGenerationRequest`
 
 </dd>
 </dl>
@@ -70,7 +70,7 @@ await client.tts.bytes({
 </dl>
 </details>
 
-<details><summary><code>client.tts.<a href="/src/api/resources/tts/client/Client.ts">sse</a>({ ...params }) -> core.Stream<RespeecherApi.ServerSentEvent></code></summary>
+<details><summary><code>client.tts.<a href="/src/api/resources/tts/client/Client.ts">sse</a>({ ...params }) -> core.Stream<Respeecher.ServerSentEvent></code></summary>
 <dl>
 <dd>
 
@@ -122,7 +122,7 @@ for await (const item of response) {
 <dl>
 <dd>
 
-**request:** `RespeecherApi.StreamingGenerationRequest`
+**request:** `Respeecher.StreamingGenerationRequest`
 
 </dd>
 </dl>
@@ -143,7 +143,7 @@ for await (const item of response) {
 
 ## Voices
 
-<details><summary><code>client.voices.<a href="/src/api/resources/voices/client/Client.ts">list</a>() -> RespeecherApi.Voice[]</code></summary>
+<details><summary><code>client.voices.<a href="/src/api/resources/voices/client/Client.ts">list</a>() -> Respeecher.Voice[]</code></summary>
 <dl>
 <dd>
 

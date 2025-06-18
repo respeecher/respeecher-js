@@ -20,9 +20,9 @@ A full reference for this library is available [here](https://github.com/respeec
 Instantiate and use the client with the following:
 
 ```typescript
-import { RespeecherApiClient } from "@respeecher/respeecher-js";
+import { RespeecherClient } from "@respeecher/respeecher-js";
 
-const client = new RespeecherApiClient({ apiKey: "YOUR_API_KEY" });
+const client = new RespeecherClient({ apiKey: "YOUR_API_KEY" });
 await client.tts.bytes({
     transcript: "Hello, World!",
     voice: {
@@ -37,12 +37,12 @@ When the API returns a non-success status code (4xx or 5xx response), a subclass
 will be thrown.
 
 ```typescript
-import { RespeecherApiError } from "@respeecher/respeecher-js";
+import { RespeecherError } from "@respeecher/respeecher-js";
 
 try {
     await client.tts.bytes(...);
 } catch (err) {
-    if (err instanceof RespeecherApiError) {
+    if (err instanceof RespeecherError) {
         console.log(err.statusCode);
         console.log(err.message);
         console.log(err.body);
@@ -137,9 +137,9 @@ The SDK provides a way for you to customize the underlying HTTP client / Fetch f
 unsupported environment, this provides a way for you to break glass and ensure the SDK works.
 
 ```typescript
-import { RespeecherApiClient } from "@respeecher/respeecher-js";
+import { RespeecherClient } from "@respeecher/respeecher-js";
 
-const client = new RespeecherApiClient({
+const client = new RespeecherClient({
     ...
     fetcher: // provide your implementation here
 });

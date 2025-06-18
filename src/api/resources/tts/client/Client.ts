@@ -4,9 +4,10 @@
 
 import * as environments from "../../../../environments.js";
 import * as core from "../../../../core/index.js";
-import * as RespeecherApi from "../../../index.js";
+import * as Respeecher from "../../../index.js";
 import * as stream from "stream";
 import { mergeHeaders, mergeOnlyDefinedHeaders } from "../../../../core/headers.js";
+import * as serializers from "../../../../serialization/index.js";
 import urlJoin from "url-join";
 import * as errors from "../../../../errors/index.js";
 import * as qs from "qs";
@@ -14,7 +15,7 @@ import { TtsSocket } from "./Socket.js";
 
 export declare namespace Tts {
     export interface Options {
-        environment?: core.Supplier<environments.RespeecherApiEnvironment | environments.RespeecherApiEnvironmentUrls>;
+        environment?: core.Supplier<environments.RespeecherEnvironment | environments.RespeecherEnvironmentUrls>;
         /** Specify a custom URL to connect the client to. */
         baseUrl?: core.Supplier<string>;
         apiKey?: core.Supplier<string>;
@@ -54,14 +55,14 @@ export class Tts {
      * The easiest way to generate text-to-speech audio. Not suitable for latency-sensitive applications.
      */
     public bytes(
-        request: RespeecherApi.tts.OfflineGenerationRequest,
+        request: Respeecher.tts.OfflineGenerationRequest,
         requestOptions?: Tts.RequestOptions,
     ): core.HttpResponsePromise<stream.Readable> {
         return core.HttpResponsePromise.fromPromise(this.__bytes(request, requestOptions));
     }
 
     private async __bytes(
-        request: RespeecherApi.tts.OfflineGenerationRequest,
+        request: Respeecher.tts.OfflineGenerationRequest,
         requestOptions?: Tts.RequestOptions,
     ): Promise<core.WithRawResponse<stream.Readable>> {
         const _response = await core.fetcher<stream.Readable>({
@@ -69,7 +70,7 @@ export class Tts {
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     (
                         (await core.Supplier.get(this._options.environment)) ??
-                        environments.RespeecherApiEnvironment.PublicEnRt
+                        environments.RespeecherEnvironment.PublicEnRt
                     ).base,
                 "/tts/bytes",
             ),
@@ -81,7 +82,10 @@ export class Tts {
             ),
             contentType: "application/json",
             requestType: "json",
-            body: request,
+            body: serializers.tts.OfflineGenerationRequest.jsonOrThrow(request, {
+                unrecognizedObjectKeys: "strip",
+                omitUndefined: true,
+            }),
             responseType: "streaming",
             timeoutMs: requestOptions?.timeoutInSeconds != null ? requestOptions.timeoutInSeconds * 1000 : 60000,
             maxRetries: requestOptions?.maxRetries,
@@ -92,7 +96,7 @@ export class Tts {
         }
 
         if (_response.error.reason === "status-code") {
-            throw new errors.RespeecherApiError({
+            throw new errors.RespeecherError({
                 statusCode: _response.error.statusCode,
                 body: _response.error.body,
                 rawResponse: _response.rawResponse,
@@ -101,15 +105,15 @@ export class Tts {
 
         switch (_response.error.reason) {
             case "non-json":
-                throw new errors.RespeecherApiError({
+                throw new errors.RespeecherError({
                     statusCode: _response.error.statusCode,
                     body: _response.error.rawBody,
                     rawResponse: _response.rawResponse,
                 });
             case "timeout":
-                throw new errors.RespeecherApiTimeoutError("Timeout exceeded when calling POST /tts/bytes.");
+                throw new errors.RespeecherTimeoutError("Timeout exceeded when calling POST /tts/bytes.");
             case "unknown":
-                throw new errors.RespeecherApiError({
+                throw new errors.RespeecherError({
                     message: _response.error.errorMessage,
                     rawResponse: _response.rawResponse,
                 });
@@ -120,22 +124,22 @@ export class Tts {
      * Stream text-to-speech audio as JSONL (JSON lines) objects over HTTP. A less performant alternative to WebSockets, without text input streaming.
      */
     public sse(
-        request: RespeecherApi.tts.StreamingGenerationRequest,
+        request: Respeecher.tts.StreamingGenerationRequest,
         requestOptions?: Tts.RequestOptions,
-    ): core.HttpResponsePromise<core.Stream<RespeecherApi.tts.ServerSentEvent>> {
+    ): core.HttpResponsePromise<core.Stream<Respeecher.tts.ServerSentEvent>> {
         return core.HttpResponsePromise.fromPromise(this.__sse(request, requestOptions));
     }
 
     private async __sse(
-        request: RespeecherApi.tts.StreamingGenerationRequest,
+        request: Respeecher.tts.StreamingGenerationRequest,
         requestOptions?: Tts.RequestOptions,
-    ): Promise<core.WithRawResponse<core.Stream<RespeecherApi.tts.ServerSentEvent>>> {
+    ): Promise<core.WithRawResponse<core.Stream<Respeecher.tts.ServerSentEvent>>> {
         const _response = await core.fetcher<stream.Readable>({
             url: urlJoin(
                 (await core.Supplier.get(this._options.baseUrl)) ??
                     (
                         (await core.Supplier.get(this._options.environment)) ??
-                        environments.RespeecherApiEnvironment.PublicEnRt
+                        environments.RespeecherEnvironment.PublicEnRt
                     ).base,
                 "/tts/sse",
             ),
@@ -147,7 +151,10 @@ export class Tts {
             ),
             contentType: "application/json",
             requestType: "json",
-            body: request,
+            body: serializers.tts.StreamingGenerationRequest.jsonOrThrow(request, {
+                unrecognizedObjectKeys: "strip",
+                omitUndefined: true,
+            }),
             responseType: "sse",
             timeoutMs: requestOptions?.timeoutInSeconds != null ? requestOptions.timeoutInSeconds * 1000 : 60000,
             maxRetries: requestOptions?.maxRetries,
@@ -157,7 +164,15 @@ export class Tts {
             return {
                 data: new core.Stream({
                     stream: _response.body,
-                    parse: (data) => data as any,
+                    parse: async (data) => {
+                        return serializers.tts.ServerSentEvent.parseOrThrow(data, {
+                            unrecognizedObjectKeys: "passthrough",
+                            allowUnrecognizedUnionMembers: true,
+                            allowUnrecognizedEnumValues: true,
+                            skipValidation: true,
+                            breadcrumbsPrefix: ["response"],
+                        });
+                    },
                     signal: requestOptions?.abortSignal,
                     eventShape: {
                         type: "json",
@@ -169,7 +184,7 @@ export class Tts {
         }
 
         if (_response.error.reason === "status-code") {
-            throw new errors.RespeecherApiError({
+            throw new errors.RespeecherError({
                 statusCode: _response.error.statusCode,
                 body: _response.error.body,
                 rawResponse: _response.rawResponse,
@@ -178,15 +193,15 @@ export class Tts {
 
         switch (_response.error.reason) {
             case "non-json":
-                throw new errors.RespeecherApiError({
+                throw new errors.RespeecherError({
                     statusCode: _response.error.statusCode,
                     body: _response.error.rawBody,
                     rawResponse: _response.rawResponse,
                 });
             case "timeout":
-                throw new errors.RespeecherApiTimeoutError("Timeout exceeded when calling POST /tts/sse.");
+                throw new errors.RespeecherTimeoutError("Timeout exceeded when calling POST /tts/sse.");
             case "unknown":
-                throw new errors.RespeecherApiError({
+                throw new errors.RespeecherError({
                     message: _response.error.errorMessage,
                     rawResponse: _response.rawResponse,
                 });
@@ -205,7 +220,7 @@ export class Tts {
             ...args["headers"],
         };
         const socket = new core.ReconnectingWebSocket(
-            `${(await core.Supplier.get(this._options["baseUrl"])) ?? ((await core.Supplier.get(this._options["environment"])) ?? environments.RespeecherApiEnvironment.PublicEnRt).ws}/tts/websocket?${qs.stringify(queryParams, { arrayFormat: "repeat" })}`,
+            `${(await core.Supplier.get(this._options["baseUrl"])) ?? ((await core.Supplier.get(this._options["environment"])) ?? environments.RespeecherEnvironment.PublicEnRt).ws}/tts/websocket?${qs.stringify(queryParams, { arrayFormat: "repeat" })}`,
             [],
             { debug: args["debug"] ?? false, maxRetries: args["reconnectAttempts"] ?? 30 },
             websocketHeaders,

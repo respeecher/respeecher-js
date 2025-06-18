@@ -1,6 +1,6 @@
 {
     "name": "@respeecher/respeecher-js",
-    "version": "0.0.86",
+    "version": "0.0.87",
     "private": false,
     "repository": "https://github.com/respeecher/respeecher-js",
     "type": "commonjs",
@@ -19,6 +19,18 @@
                 "default": "./dist/cjs/index.js"
             },
             "default": "./dist/cjs/index.js"
+        },
+        "./serialization": {
+            "types": "./dist/cjs/serialization/index.d.ts",
+            "import": {
+                "types": "./dist/esm/serialization/index.d.mts",
+                "default": "./dist/esm/serialization/index.mjs"
+            },
+            "require": {
+                "types": "./dist/cjs/serialization/index.d.ts",
+                "default": "./dist/cjs/serialization/index.js"
+            },
+            "default": "./dist/cjs/serialization/index.js"
         },
         "./package.json": "./package.json"
     },

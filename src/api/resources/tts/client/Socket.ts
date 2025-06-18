@@ -3,15 +3,18 @@
  */
 
 import * as core from "../../../../core/index.js";
-import * as RespeecherApi from "../../../index.js";
-import { fromJson, toJson } from "../../../../core/json.js";
+import * as Respeecher from "../../../index.js";
+import { ContextfulGenerationRequest } from "../../../../serialization/resources/tts/types/ContextfulGenerationRequest.js";
+import { CancellationRequest } from "../../../../serialization/resources/tts/types/CancellationRequest.js";
+import { fromJson } from "../../../../core/json.js";
+import * as serializers from "../../../../serialization/index.js";
 
 export declare namespace TtsSocket {
     export interface Args {
         socket: core.ReconnectingWebSocket;
     }
 
-    export type Response = RespeecherApi.tts.Response;
+    export type Response = Respeecher.tts.Response;
     type EventHandlers = {
         open?: () => void;
         message?: (message: Response) => void;
@@ -29,7 +32,15 @@ export class TtsSocket {
     private handleMessage: (event: { data: string }) => void = (event) => {
         const data = fromJson(event.data);
 
-        this.eventHandlers.message?.(data as TtsSocket.Response);
+        const parsedResponse = serializers.tts.WebSocketSocketResponse.parse(data, {
+            unrecognizedObjectKeys: "strip",
+            omitUndefined: true,
+        });
+        if (parsedResponse.ok) {
+            this.eventHandlers.message?.(parsedResponse.value);
+        } else {
+            this.eventHandlers.error?.(new Error("Received unknown message type"));
+        }
     };
     private handleClose: (event: core.CloseEvent) => void = (event) => {
         this.eventHandlers.close?.(event);
@@ -66,14 +77,26 @@ export class TtsSocket {
         this.eventHandlers[event] = callback;
     }
 
-    public sendGenerate(message: RespeecherApi.tts.ContextfulGenerationRequest): void {
+    public sendGenerate(message: Respeecher.tts.ContextfulGenerationRequest): void {
         this.assertSocketIsOpen();
-        this.sendJson(message);
+        const jsonPayload = ContextfulGenerationRequest.jsonOrThrow(message, {
+            unrecognizedObjectKeys: "strip",
+            allowUnrecognizedUnionMembers: true,
+            allowUnrecognizedEnumValues: true,
+            skipValidation: true,
+        });
+        this.socket.send(JSON.stringify(jsonPayload));
     }
 
-    public sendCancel(message: RespeecherApi.tts.CancellationRequest): void {
+    public sendCancel(message: Respeecher.tts.CancellationRequest): void {
         this.assertSocketIsOpen();
-        this.sendJson(message);
+        const jsonPayload = CancellationRequest.jsonOrThrow(message, {
+            unrecognizedObjectKeys: "strip",
+            allowUnrecognizedUnionMembers: true,
+            allowUnrecognizedEnumValues: true,
+            skipValidation: true,
+        });
+        this.socket.send(JSON.stringify(jsonPayload));
     }
 
     /** Connect to the websocket and register event handlers. */
@@ -131,13 +154,5 @@ export class TtsSocket {
     /** Send a binary payload to the websocket. */
     private sendBinary(payload: ArrayBufferLike | Blob | ArrayBufferView): void {
         this.socket.send(payload);
-    }
-
-    /** Send a JSON payload to the websocket. */
-    private sendJson(
-        payload: RespeecherApi.tts.ContextfulGenerationRequest | RespeecherApi.tts.CancellationRequest,
-    ): void {
-        const jsonPayload = toJson(payload);
-        this.socket.send(jsonPayload);
     }
 }

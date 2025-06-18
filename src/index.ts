@@ -1,4 +1,5 @@
-export * as RespeecherApi from "./api/index.js";
-export { RespeecherApiClient } from "./Client.js";
-export { RespeecherApiEnvironment, RespeecherApiEnvironmentUrls } from "./environments.js";
-export { RespeecherApiError, RespeecherApiTimeoutError } from "./errors/index.js";
+export * as Respeecher from "./api/index.js";
+export * as serialization from "./serialization/index.js";
+export { RespeecherClient } from "./Client.js";
+export { RespeecherEnvironment, RespeecherEnvironmentUrls } from "./environments.js";
+export { RespeecherError, RespeecherTimeoutError } from "./errors/index.js";

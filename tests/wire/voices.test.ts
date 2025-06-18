@@ -3,12 +3,12 @@
  */
 
 import { mockServerPool } from "../mock-server/MockServerPool.js";
-import { RespeecherApiClient } from "../../src/Client";
+import { RespeecherClient } from "../../src/Client";
 
 describe("Voices", () => {
     test("List", async () => {
         const server = mockServerPool.createServer();
-        const client = new RespeecherApiClient({
+        const client = new RespeecherClient({
             apiKey: "test",
             environment: { base: server.baseUrl, ws: server.baseUrl },
         });
