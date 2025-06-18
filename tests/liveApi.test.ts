@@ -1,6 +1,8 @@
 import { RespeecherClient } from "../src";
 
 describe("Test the client against the live API", () => {
+    /* The API key is taken from the environment (RESPEECHER_API_KEY)
+     * if not passed as an argument to the constructor. */
     const client = new RespeecherClient();
 
     it("should return a non-empty list of voices", async () => {
