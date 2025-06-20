@@ -51,7 +51,7 @@ await client.tts.bytes({
 <dl>
 <dd>
 
-**request:** `Respeecher.OfflineGenerationRequest`
+**request:** `Respeecher.BytesGenerationRequest`
 
 </dd>
 </dl>

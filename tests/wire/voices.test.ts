@@ -14,8 +14,32 @@ describe("Voices", () => {
         });
 
         const rawResponseBody = [
-            { id: "samantha", gender: "female", accent: "American" },
-            { id: "volodymyr", gender: "male", accent: "Ukrainian" },
+            {
+                id: "samantha",
+                gender: "female",
+                accent: "American",
+                sampling_params: {
+                    temperature: 0.6,
+                    top_k: -1,
+                    top_p: 0.8,
+                    min_p: 1,
+                    repetition_penalty: 2,
+                    frequency_penalty: 2,
+                },
+            },
+            {
+                id: "volodymyr",
+                gender: "male",
+                accent: "Ukrainian",
+                sampling_params: {
+                    temperature: 0.4,
+                    top_k: -1,
+                    top_p: 0.8,
+                    min_p: 1,
+                    repetition_penalty: 2,
+                    frequency_penalty: 2,
+                },
+            },
         ];
         server.mockEndpoint().get("/voices").respondWith().statusCode(200).jsonBody(rawResponseBody).build();
 
@@ -25,11 +49,27 @@ describe("Voices", () => {
                 id: "samantha",
                 gender: "female",
                 accent: "American",
+                samplingParams: {
+                    temperature: 0.6,
+                    topK: -1,
+                    topP: 0.8,
+                    minP: 1,
+                    repetitionPenalty: 2,
+                    frequencyPenalty: 2,
+                },
             },
             {
                 id: "volodymyr",
                 gender: "male",
                 accent: "Ukrainian",
+                samplingParams: {
+                    temperature: 0.4,
+                    topK: -1,
+                    topP: 0.8,
+                    minP: 1,
+                    repetitionPenalty: 2,
+                    frequencyPenalty: 2,
+                },
             },
         ]);
     });

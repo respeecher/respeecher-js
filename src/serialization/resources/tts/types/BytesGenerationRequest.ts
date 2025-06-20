@@ -8,16 +8,16 @@ import * as core from "../../../../core/index.js";
 import { OutputFormat } from "./OutputFormat.js";
 import { GenerationRequest } from "./GenerationRequest.js";
 
-export const OfflineGenerationRequest: core.serialization.ObjectSchema<
-    serializers.tts.OfflineGenerationRequest.Raw,
-    Respeecher.tts.OfflineGenerationRequest
+export const BytesGenerationRequest: core.serialization.ObjectSchema<
+    serializers.tts.BytesGenerationRequest.Raw,
+    Respeecher.tts.BytesGenerationRequest
 > = core.serialization
     .object({
         outputFormat: core.serialization.property("output_format", OutputFormat.optional()),
     })
     .extend(GenerationRequest);
 
-export declare namespace OfflineGenerationRequest {
+export declare namespace BytesGenerationRequest {
     export interface Raw extends GenerationRequest.Raw {
         output_format?: OutputFormat.Raw | null;
     }

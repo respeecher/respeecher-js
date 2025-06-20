@@ -29,7 +29,7 @@ export namespace Response {
         type: "done";
     }
 
-    export interface Error_ extends Respeecher.tts.Error_ {
+    export interface Error_ extends Respeecher.tts.StreamingError {
         type: "error";
     }
 }

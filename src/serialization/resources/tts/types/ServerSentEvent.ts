@@ -6,7 +6,7 @@ import * as serializers from "../../../index.js";
 import * as Respeecher from "../../../../api/index.js";
 import * as core from "../../../../core/index.js";
 import { Chunk } from "./Chunk.js";
-import { Error_ } from "./Error_.js";
+import { StreamingError } from "./StreamingError.js";
 
 export const ServerSentEvent: core.serialization.Schema<
     serializers.tts.ServerSentEvent.Raw,
@@ -14,7 +14,7 @@ export const ServerSentEvent: core.serialization.Schema<
 > = core.serialization
     .union("type", {
         chunk: Chunk,
-        error: Error_,
+        error: StreamingError,
     })
     .transform<Respeecher.tts.ServerSentEvent>({
         transform: (value) => value,
@@ -28,7 +28,7 @@ export declare namespace ServerSentEvent {
         type: "chunk";
     }
 
-    export interface Error extends Error_.Raw {
+    export interface Error extends StreamingError.Raw {
         type: "error";
     }
 }

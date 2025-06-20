@@ -6,6 +6,7 @@ import * as serializers from "../../../index.js";
 import * as Respeecher from "../../../../api/index.js";
 import * as core from "../../../../core/index.js";
 import { Gender } from "./Gender.js";
+import { SamplingParams } from "./SamplingParams.js";
 
 export const Voice: core.serialization.ObjectSchema<serializers.Voice.Raw, Respeecher.Voice> =
     core.serialization.object({
@@ -13,6 +14,7 @@ export const Voice: core.serialization.ObjectSchema<serializers.Voice.Raw, Respe
         gender: Gender.optional(),
         accent: core.serialization.string().optional(),
         age: core.serialization.string().optional(),
+        samplingParams: core.serialization.property("sampling_params", SamplingParams.optional()),
     });
 
 export declare namespace Voice {
@@ -21,5 +23,6 @@ export declare namespace Voice {
         gender?: Gender.Raw | null;
         accent?: string | null;
         age?: string | null;
+        sampling_params?: SamplingParams.Raw | null;
     }
 }

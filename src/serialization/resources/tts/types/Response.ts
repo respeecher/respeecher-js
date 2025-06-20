@@ -7,14 +7,14 @@ import * as Respeecher from "../../../../api/index.js";
 import * as core from "../../../../core/index.js";
 import { ContextfulChunk } from "./ContextfulChunk.js";
 import { Done } from "./Done.js";
-import { Error_ } from "./Error_.js";
+import { StreamingError } from "./StreamingError.js";
 
 export const Response: core.serialization.Schema<serializers.tts.Response.Raw, Respeecher.tts.Response> =
     core.serialization
         .union("type", {
             chunk: ContextfulChunk,
             done: Done,
-            error: Error_,
+            error: StreamingError,
         })
         .transform<Respeecher.tts.Response>({
             transform: (value) => value,
@@ -32,7 +32,7 @@ export declare namespace Response {
         type: "done";
     }
 
-    export interface Error extends Error_.Raw {
+    export interface Error extends StreamingError.Raw {
         type: "error";
     }
 }

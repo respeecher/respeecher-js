@@ -55,14 +55,14 @@ export class Tts {
      * The easiest way to generate text-to-speech audio. Not suitable for latency-sensitive applications.
      */
     public bytes(
-        request: Respeecher.tts.OfflineGenerationRequest,
+        request: Respeecher.tts.BytesGenerationRequest,
         requestOptions?: Tts.RequestOptions,
     ): core.HttpResponsePromise<stream.Readable> {
         return core.HttpResponsePromise.fromPromise(this.__bytes(request, requestOptions));
     }
 
     private async __bytes(
-        request: Respeecher.tts.OfflineGenerationRequest,
+        request: Respeecher.tts.BytesGenerationRequest,
         requestOptions?: Tts.RequestOptions,
     ): Promise<core.WithRawResponse<stream.Readable>> {
         const _response = await core.fetcher<stream.Readable>({
@@ -82,7 +82,7 @@ export class Tts {
             ),
             contentType: "application/json",
             requestType: "json",
-            body: serializers.tts.OfflineGenerationRequest.jsonOrThrow(request, {
+            body: serializers.tts.BytesGenerationRequest.jsonOrThrow(request, {
                 unrecognizedObjectKeys: "strip",
                 omitUndefined: true,
             }),

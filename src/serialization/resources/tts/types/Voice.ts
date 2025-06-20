@@ -5,14 +5,17 @@
 import * as serializers from "../../../index.js";
 import * as Respeecher from "../../../../api/index.js";
 import * as core from "../../../../core/index.js";
+import { SamplingParams } from "../../voices/types/SamplingParams.js";
 
 export const Voice: core.serialization.ObjectSchema<serializers.tts.Voice.Raw, Respeecher.tts.Voice> =
     core.serialization.object({
         id: core.serialization.string(),
+        samplingParams: core.serialization.property("sampling_params", SamplingParams.optional()),
     });
 
 export declare namespace Voice {
     export interface Raw {
         id: string;
+        sampling_params?: SamplingParams.Raw | null;
     }
 }

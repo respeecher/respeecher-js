@@ -9,4 +9,6 @@ export interface Voice {
     gender?: Respeecher.Gender;
     accent?: string;
     age?: string;
+    /** Default sampling params for this voice. */
+    samplingParams?: Respeecher.SamplingParams;
 }

@@ -13,7 +13,7 @@ import * as Respeecher from "../../../index.js";
  *         }
  *     }
  */
-export interface OfflineGenerationRequest extends Respeecher.tts.GenerationRequest {
+export interface BytesGenerationRequest extends Respeecher.tts.GenerationRequest {
     /** Audio format specification. */
     outputFormat?: Respeecher.tts.OutputFormat;
 }

@@ -11,7 +11,7 @@ export namespace ServerSentEvent {
         type: "chunk";
     }
 
-    export interface Error_ extends Respeecher.tts.Error_ {
+    export interface Error_ extends Respeecher.tts.StreamingError {
         type: "error";
     }
 }
