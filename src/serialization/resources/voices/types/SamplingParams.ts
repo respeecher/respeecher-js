@@ -15,6 +15,7 @@ export const SamplingParams: core.serialization.ObjectSchema<
     topK: core.serialization.property("top_k", core.serialization.number().optional()),
     topP: core.serialization.property("top_p", core.serialization.number().optional()),
     minP: core.serialization.property("min_p", core.serialization.number().optional()),
+    presencePenalty: core.serialization.property("presence_penalty", core.serialization.number().optional()),
     repetitionPenalty: core.serialization.property("repetition_penalty", core.serialization.number().optional()),
     frequencyPenalty: core.serialization.property("frequency_penalty", core.serialization.number().optional()),
 });
@@ -26,6 +27,7 @@ export declare namespace SamplingParams {
         top_k?: number | null;
         top_p?: number | null;
         min_p?: number | null;
+        presence_penalty?: number | null;
         repetition_penalty?: number | null;
         frequency_penalty?: number | null;
     }

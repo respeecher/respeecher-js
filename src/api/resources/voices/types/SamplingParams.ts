@@ -13,6 +13,8 @@ export interface SamplingParams {
     topP?: number;
     /** Must be between 0 and 1, inclusive. */
     minP?: number;
+    /** Must be between 0 and 2, inclusive. */
+    presencePenalty?: number;
     /** Must be between 1 and 2, inclusive. */
     repetitionPenalty?: number;
     /** Must be between 0 and 2, inclusive. */
