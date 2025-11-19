@@ -42,8 +42,8 @@ export class RespeecherClient {
                 {
                     "X-Fern-Language": "JavaScript",
                     "X-Fern-SDK-Name": "@respeecher/respeecher-js",
-                    "X-Fern-SDK-Version": "1.0.0",
-                    "User-Agent": "@respeecher/respeecher-js/1.0.0",
+                    "X-Fern-SDK-Version": "1.0.2",
+                    "User-Agent": "@respeecher/respeecher-js/1.0.2",
                     "X-Fern-Runtime": core.RUNTIME.type,
                     "X-Fern-Runtime-Version": core.RUNTIME.version,
                 },

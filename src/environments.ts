@@ -12,6 +12,10 @@ export const RespeecherEnvironment = {
         base: "https://api.respeecher.com/v1/public/tts/en-rt",
         ws: "wss://api.respeecher.com/v1/public/tts/en-rt",
     },
+    PublicUaRt: {
+        base: "https://api.respeecher.com/v1/public/tts/ua-rt",
+        ws: "wss://api.respeecher.com/v1/public/tts/ua-rt",
+    },
 } as const;
 
-export type RespeecherEnvironment = typeof RespeecherEnvironment.PublicEnRt;
+export type RespeecherEnvironment = typeof RespeecherEnvironment.PublicEnRt | typeof RespeecherEnvironment.PublicUaRt;

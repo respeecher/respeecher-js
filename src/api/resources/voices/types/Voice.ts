@@ -9,6 +9,6 @@ export interface Voice {
     gender?: Respeecher.Gender;
     accent?: string;
     age?: string;
-    /** Default sampling params for this voice. */
+    /** Default sampling params for this voice. See also [Sampling Params Guide](../tts/sampling-params-guide). */
     samplingParams?: Respeecher.SamplingParams;
 }

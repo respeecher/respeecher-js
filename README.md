@@ -3,7 +3,22 @@
 [![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2Frespeecher%2Frespeecher-js)
 [![npm shield](https://img.shields.io/npm/v/@respeecher/respeecher-js)](https://www.npmjs.com/package/@respeecher/respeecher-js)
 
-The Respeecher TypeScript library provides convenient access to the Respeecher API from TypeScript.
+The Respeecher TypeScript library provides convenient access to the Respeecher APIs from TypeScript.
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Reference](#reference)
+- [Usage](#usage)
+- [Exception Handling](#exception-handling)
+- [Advanced](#advanced)
+    - [Additional Headers](#additional-headers)
+    - [Retries](#retries)
+    - [Timeouts](#timeouts)
+    - [Aborting Requests](#aborting-requests)
+    - [Access Raw Response Data](#access-raw-response-data)
+    - [Runtime Compatibility](#runtime-compatibility)
+- [Contributing](#contributing)
 
 ## Installation
 
