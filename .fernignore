@@ -1,6 +1,6 @@
 # Specify files that shouldn't be modified by Fern
 
-# .github/workflows/ci.yml
+.github/workflows/ci.yml
 
 tests/custom.test.ts
 tests/liveApi.test.ts

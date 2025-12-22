@@ -40,3 +40,5 @@ jobs:
 
       - name: Test
         run: pnpm test
+        env:
+          RESPEECHER_API_KEY: ${{ secrets.RESPEECHER_API_KEY }}
