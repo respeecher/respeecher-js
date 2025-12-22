@@ -9,8 +9,8 @@ import * as core from "../../../../core/index.js";
 export const StreamingEncoding: core.serialization.Schema<
     serializers.tts.StreamingEncoding.Raw,
     Respeecher.tts.StreamingEncoding
-> = core.serialization.enum_(["pcm_f32le", "pcm_s16le"]);
+> = core.serialization.enum_(["pcm_f32le", "pcm_s16le", "pcm_mulaw"]);
 
 export declare namespace StreamingEncoding {
-    export type Raw = "pcm_f32le" | "pcm_s16le";
+    export type Raw = "pcm_f32le" | "pcm_s16le" | "pcm_mulaw";
 }

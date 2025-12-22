@@ -6,6 +6,7 @@ import * as Respeecher from "../../../index.js";
 
 export interface Voice {
     id: string;
+    fullName?: string;
     gender?: Respeecher.Gender;
     accent?: string;
     age?: string;

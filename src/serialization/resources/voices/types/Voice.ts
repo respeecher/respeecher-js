@@ -11,6 +11,7 @@ import { SamplingParams } from "./SamplingParams.js";
 export const Voice: core.serialization.ObjectSchema<serializers.Voice.Raw, Respeecher.Voice> =
     core.serialization.object({
         id: core.serialization.string(),
+        fullName: core.serialization.property("full_name", core.serialization.string().optional()),
         gender: Gender.optional(),
         accent: core.serialization.string().optional(),
         age: core.serialization.string().optional(),
@@ -20,6 +21,7 @@ export const Voice: core.serialization.ObjectSchema<serializers.Voice.Raw, Respe
 export declare namespace Voice {
     export interface Raw {
         id: string;
+        full_name?: string | null;
         gender?: Gender.Raw | null;
         accent?: string | null;
         age?: string | null;
