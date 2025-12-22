@@ -7,5 +7,5 @@
         "shouldGenerateWebsocketClients": true,
         "noSerdeLayer": false
     },
-    "sdkVersion": "1.1.2"
+    "sdkVersion": "1.1.3"
 }
