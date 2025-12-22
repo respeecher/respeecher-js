@@ -31,7 +31,7 @@ describe("Test the client against the live API", () => {
         await new Promise((resolve) => {
             let audioDurationInSeconds = 0;
 
-            socket.handleMessage((message) => {
+            socket.on("message", (message) => {
                 if (message.type === "chunk") {
                     expect(message.contextId).toBe(contextId);
 
@@ -57,7 +57,7 @@ describe("Test the client against the live API", () => {
         const response = await client.tts.bytes(sampleRequest);
         let bytesReceivedCount = 0;
 
-        for await (const chunk of response.body()) {
+        for await (const chunk of response.stream()) {
             bytesReceivedCount += chunk.length;
         }
 
