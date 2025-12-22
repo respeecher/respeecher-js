@@ -4,4 +4,3 @@
 
 tests/custom.test.ts
 tests/liveApi.test.ts
-jest.config.mjs
