@@ -14,7 +14,7 @@ describe("Test the client against the live API", () => {
     const sampleRequest = {
         transcript: "A quick brown fox jumps over the lazy dog!",
         voice: {
-            id: "marta",
+            id: "samantha",
         },
     };
 
