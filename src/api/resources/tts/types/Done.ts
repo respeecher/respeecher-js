@@ -2,5 +2,5 @@
 
 export interface Done {
     /** ID of the context that has finished generating audio. */
-    context_id: string;
+    contextId: string;
 }

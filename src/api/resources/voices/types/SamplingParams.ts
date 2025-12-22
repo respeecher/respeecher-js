@@ -6,15 +6,15 @@ export interface SamplingParams {
     /** Smaller values correspond to more stable but less expressive speech. Must be greater than or equal to 0. */
     temperature?: number;
     /** Must be -1 or greater than 0. */
-    top_k?: number;
+    topK?: number;
     /** Must be greater than 0 and less than or equal to 1. */
-    top_p?: number;
+    topP?: number;
     /** Must be between 0 and 1, inclusive. */
-    min_p?: number;
+    minP?: number;
     /** Must be between 0 and 2, inclusive. */
-    presence_penalty?: number;
+    presencePenalty?: number;
     /** Must be between 1 and 2, inclusive. */
-    repetition_penalty?: number;
+    repetitionPenalty?: number;
     /** Must be between 0 and 2, inclusive. */
-    frequency_penalty?: number;
+    frequencyPenalty?: number;
 }

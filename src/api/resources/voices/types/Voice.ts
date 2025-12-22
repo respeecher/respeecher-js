@@ -4,10 +4,10 @@ import type * as Respeecher from "../../../index.js";
 
 export interface Voice {
     id: string;
-    full_name?: string;
+    fullName?: string;
     gender?: Respeecher.Gender;
     accent?: string;
     age?: string;
     /** Default sampling params for this voice. See also [Sampling Params Guide](../tts/sampling-params-guide). */
-    sampling_params?: Respeecher.SamplingParams;
+    samplingParams?: Respeecher.SamplingParams;
 }

@@ -3,5 +3,5 @@
 import type * as Respeecher from "../../../index.js";
 
 export interface ContextfulChunk extends Respeecher.tts.Chunk {
-    context_id: string;
+    contextId: string;
 }

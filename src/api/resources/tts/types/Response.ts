@@ -6,14 +6,14 @@ import type * as Respeecher from "../../../index.js";
  * @example
  *     {
  *         type: "chunk",
- *         context_id: "abc",
+ *         contextId: "abc",
  *         data: "base64"
  *     }
  *
  * @example
  *     {
  *         type: "done",
- *         context_id: "abc"
+ *         contextId: "abc"
  *     }
  */
 export type Response = Respeecher.tts.Response.Chunk | Respeecher.tts.Response.Done | Respeecher.tts.Response.Error_;

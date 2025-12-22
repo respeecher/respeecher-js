@@ -13,5 +13,5 @@ import type * as Respeecher from "../../../index.js";
  */
 export interface StreamingGenerationRequest extends Respeecher.tts.GenerationRequest {
     /** Audio format specification. */
-    output_format?: Respeecher.tts.StreamingOutputFormat;
+    outputFormat?: Respeecher.tts.StreamingOutputFormat;
 }

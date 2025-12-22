@@ -7,6 +7,7 @@ import * as core from "../../../../core/index.js";
 import * as environments from "../../../../environments.js";
 import { handleNonStatusCodeError } from "../../../../errors/handleNonStatusCodeError.js";
 import * as errors from "../../../../errors/index.js";
+import * as serializers from "../../../../serialization/index.js";
 import type * as Respeecher from "../../../index.js";
 
 export declare namespace VoicesClient {
@@ -62,7 +63,16 @@ export class VoicesClient {
             logging: this._options.logging,
         });
         if (_response.ok) {
-            return { data: _response.body as Respeecher.Voice[], rawResponse: _response.rawResponse };
+            return {
+                data: serializers.voices.list.Response.parseOrThrow(_response.body, {
+                    unrecognizedObjectKeys: "passthrough",
+                    allowUnrecognizedUnionMembers: true,
+                    allowUnrecognizedEnumValues: true,
+                    skipValidation: true,
+                    breadcrumbsPrefix: ["response"],
+                }),
+                rawResponse: _response.rawResponse,
+            };
         }
 
         if (_response.error.reason === "status-code") {

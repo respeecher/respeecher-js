@@ -4,3 +4,4 @@ export { RespeecherClient } from "./Client.js";
 export { RespeecherEnvironment, type RespeecherEnvironmentUrls } from "./environments.js";
 export { RespeecherError, RespeecherTimeoutError } from "./errors/index.js";
 export * from "./exports.js";
+export * as serialization from "./serialization/index.js";

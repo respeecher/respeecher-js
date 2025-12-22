@@ -11,5 +11,5 @@ import type * as Respeecher from "../../../index.js";
 export interface Voice {
     id: string;
     /** Optional sampling params overrides. The defaults for this voice can be obtained through the [Voices](../voices/list#response.body.sampling_params) endpoint. See also [Sampling Params Guide](../tts/sampling-params-guide). */
-    sampling_params?: Respeecher.SamplingParams;
+    samplingParams?: Respeecher.SamplingParams;
 }

@@ -2,5 +2,5 @@
 
 export interface OutputFormat {
     /** Audio sample rate, defaults to 22050. */
-    sample_rate?: number;
+    sampleRate?: number;
 }

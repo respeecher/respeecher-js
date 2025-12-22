@@ -5,7 +5,7 @@ import type * as Respeecher from "../../../index.js";
 /**
  * @example
  *     {
- *         context_id: "abc",
+ *         contextId: "abc",
  *         transcript: "Hello, World!",
  *         voice: {
  *             id: "samantha"
@@ -14,7 +14,7 @@ import type * as Respeecher from "../../../index.js";
  */
 export interface ContextfulGenerationRequest extends Respeecher.tts.StreamingGenerationRequest {
     /** Use different context IDs for different generations over one WebSocket connection. */
-    context_id: string;
+    contextId: string;
     /** Set to `true` for smooth prosody if text is streamed in chunks and this is not the last chunk. */
     continue?: boolean;
 }
