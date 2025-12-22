@@ -1,6 +1,7 @@
 import { WebSocket as NodeWebSocket } from "ws";
 
 import { RUNTIME } from "../runtime/index.js";
+import { toQueryString } from "../url/qs.js";
 import * as Events from "./events.js";
 
 const getGlobalWebSocket = (): WebSocket | undefined => {
@@ -22,20 +23,41 @@ export type Event = Events.Event;
 export type ErrorEvent = Events.ErrorEvent;
 export type CloseEvent = Events.CloseEvent;
 
-export type Options = {
-    WebSocket?: any;
-    maxReconnectionDelay?: number;
-    minReconnectionDelay?: number;
-    reconnectionDelayGrowFactor?: number;
-    minUptime?: number;
-    connectionTimeout?: number;
-    maxRetries?: number;
-    maxEnqueuedMessages?: number;
-    startClosed?: boolean;
-    debug?: boolean;
-};
+export declare namespace ReconnectingWebSocket {
+    export interface Args {
+        url: string;
+        protocols?: string | string[];
+        options?: ReconnectingWebSocket.Options;
+        headers?: Record<string, unknown>;
+        queryParameters?: Record<string, string | string[] | object | object[] | null | undefined>;
+    }
 
-const DEFAULT = {
+    export type Options = {
+        WebSocket?: any;
+        maxReconnectionDelay?: number;
+        minReconnectionDelay?: number;
+        reconnectionDelayGrowFactor?: number;
+        minUptime?: number;
+        connectionTimeout?: number;
+        maxRetries?: number;
+        maxEnqueuedMessages?: number;
+        startClosed?: boolean;
+        debug?: boolean;
+    };
+
+    export type UrlProvider = string | (() => string) | (() => Promise<string>);
+
+    export type Message = string | ArrayBuffer | Blob | ArrayBufferView;
+
+    export type ListenersMap = {
+        error: Array<Events.WebSocketEventListenerMap["error"]>;
+        message: Array<Events.WebSocketEventListenerMap["message"]>;
+        open: Array<Events.WebSocketEventListenerMap["open"]>;
+        close: Array<Events.WebSocketEventListenerMap["close"]>;
+    };
+}
+
+const DEFAULT_OPTIONS = {
     maxReconnectionDelay: 10000,
     minReconnectionDelay: 1000 + Math.random() * 4000,
     minUptime: 5000,
@@ -47,20 +69,9 @@ const DEFAULT = {
     debug: false,
 };
 
-export type UrlProvider = string | (() => string) | (() => Promise<string>);
-
-export type Message = string | ArrayBuffer | Blob | ArrayBufferView;
-
-export type ListenersMap = {
-    error: Array<Events.WebSocketEventListenerMap["error"]>;
-    message: Array<Events.WebSocketEventListenerMap["message"]>;
-    open: Array<Events.WebSocketEventListenerMap["open"]>;
-    close: Array<Events.WebSocketEventListenerMap["close"]>;
-};
-
 export class ReconnectingWebSocket {
     private _ws?: WebSocket;
-    private _listeners: ListenersMap = {
+    private _listeners: ReconnectingWebSocket.ListenersMap = {
         error: [],
         message: [],
         open: [],
@@ -73,48 +84,35 @@ export class ReconnectingWebSocket {
     private _connectLock = false;
     private _binaryType: BinaryType = "blob";
     private _closeCalled = false;
-    private _messageQueue: Message[] = [];
+    private _messageQueue: ReconnectingWebSocket.Message[] = [];
 
-    private readonly _url: UrlProvider;
+    private readonly _url: ReconnectingWebSocket.UrlProvider;
     private readonly _protocols?: string | string[];
-    private readonly _options: Options;
+    private readonly _options: ReconnectingWebSocket.Options;
     private readonly _headers?: Record<string, any>;
-    constructor(url: UrlProvider, protocols?: string | string[], options: Options = {}, headers?: Record<string, any>) {
+    private readonly _queryParameters?: Record<string, any>;
+
+    constructor({ url, protocols, options, headers, queryParameters }: ReconnectingWebSocket.Args) {
         this._url = url;
         this._protocols = protocols;
-        this._options = options;
+        this._options = options ?? DEFAULT_OPTIONS;
         this._headers = headers;
+        this._queryParameters = queryParameters;
         if (this._options.startClosed) {
             this._shouldReconnect = false;
         }
         this._connect();
     }
 
-    static get CONNECTING() {
-        return 0;
-    }
-    static get OPEN() {
-        return 1;
-    }
-    static get CLOSING() {
-        return 2;
-    }
-    static get CLOSED() {
-        return 3;
-    }
+    public static readonly CONNECTING = 0;
+    public static readonly OPEN = 1;
+    public static readonly CLOSING = 2;
+    public static readonly CLOSED = 3;
 
-    get CONNECTING() {
-        return ReconnectingWebSocket.CONNECTING;
-    }
-    get OPEN() {
-        return ReconnectingWebSocket.OPEN;
-    }
-    get CLOSING() {
-        return ReconnectingWebSocket.CLOSING;
-    }
-    get CLOSED() {
-        return ReconnectingWebSocket.CLOSED;
-    }
+    public readonly CONNECTING: typeof ReconnectingWebSocket.CONNECTING = ReconnectingWebSocket.CONNECTING;
+    public readonly OPEN: typeof ReconnectingWebSocket.OPEN = ReconnectingWebSocket.OPEN;
+    public readonly CLOSING: typeof ReconnectingWebSocket.CLOSING = ReconnectingWebSocket.CLOSING;
+    public readonly CLOSED: typeof ReconnectingWebSocket.CLOSED = ReconnectingWebSocket.CLOSED;
 
     get binaryType() {
         return this._ws ? this._ws.binaryType : this._binaryType;
@@ -213,7 +211,7 @@ export class ReconnectingWebSocket {
      * Closes the WebSocket connection or connection attempt, if any. If the connection is already
      * CLOSED, this method does nothing
      */
-    public close(code = 1000, reason?: string) {
+    public close(code = 1000, reason?: string): void {
         this._closeCalled = true;
         this._shouldReconnect = false;
         this._clearTimeouts();
@@ -232,7 +230,7 @@ export class ReconnectingWebSocket {
      * Closes the WebSocket connection or connection attempt and connects again.
      * Resets retry counter;
      */
-    public reconnect(code?: number, reason?: string) {
+    public reconnect(code?: number, reason?: string): void {
         this._shouldReconnect = true;
         this._closeCalled = false;
         this._retryCount = -1;
@@ -247,12 +245,12 @@ export class ReconnectingWebSocket {
     /**
      * Enqueue specified data to be transmitted to the server over the WebSocket connection
      */
-    public send(data: Message) {
+    public send(data: ReconnectingWebSocket.Message): void {
         if (this._ws && this._ws.readyState === this.OPEN) {
             this._debug("send", data);
             this._ws.send(data);
         } else {
-            const { maxEnqueuedMessages = DEFAULT.maxEnqueuedMessages } = this._options;
+            const { maxEnqueuedMessages = DEFAULT_OPTIONS.maxEnqueuedMessages } = this._options;
             if (this._messageQueue.length < maxEnqueuedMessages) {
                 this._debug("enqueue", data);
                 this._messageQueue.push(data);
@@ -303,20 +301,20 @@ export class ReconnectingWebSocket {
         if (this._options.debug) {
             // not using spread because compiled version uses Symbols
             // tslint:disable-next-line
-            // eslint-disable-next-line no-console
+            // biome-ignore lint/suspicious/noConsole: allow console
             console.log.apply(console, ["RWS>", ...args]);
         }
     }
 
     private _getNextDelay() {
         const {
-            reconnectionDelayGrowFactor = DEFAULT.reconnectionDelayGrowFactor,
-            minReconnectionDelay = DEFAULT.minReconnectionDelay,
-            maxReconnectionDelay = DEFAULT.maxReconnectionDelay,
+            reconnectionDelayGrowFactor = DEFAULT_OPTIONS.reconnectionDelayGrowFactor,
+            minReconnectionDelay = DEFAULT_OPTIONS.minReconnectionDelay,
+            maxReconnectionDelay = DEFAULT_OPTIONS.maxReconnectionDelay,
         } = this._options;
         let delay = 0;
         if (this._retryCount > 0) {
-            delay = minReconnectionDelay * Math.pow(reconnectionDelayGrowFactor, this._retryCount - 1);
+            delay = minReconnectionDelay * reconnectionDelayGrowFactor ** (this._retryCount - 1);
             if (delay > maxReconnectionDelay) {
                 delay = maxReconnectionDelay;
             }
@@ -331,7 +329,7 @@ export class ReconnectingWebSocket {
         });
     }
 
-    private _getNextUrl(urlProvider: UrlProvider): Promise<string> {
+    private _getNextUrl(urlProvider: ReconnectingWebSocket.UrlProvider): Promise<string> {
         if (typeof urlProvider === "string") {
             return Promise.resolve(urlProvider);
         }
@@ -355,8 +353,8 @@ export class ReconnectingWebSocket {
         this._connectLock = true;
 
         const {
-            maxRetries = DEFAULT.maxRetries,
-            connectionTimeout = DEFAULT.connectionTimeout,
+            maxRetries = DEFAULT_OPTIONS.maxRetries,
+            connectionTimeout = DEFAULT_OPTIONS.connectionTimeout,
             WebSocket = getGlobalWebSocket(),
         } = this._options;
 
@@ -382,6 +380,12 @@ export class ReconnectingWebSocket {
                 if (this._headers) {
                     options.headers = this._headers;
                 }
+                if (this._queryParameters && Object.keys(this._queryParameters).length > 0) {
+                    const queryString = toQueryString(this._queryParameters, { arrayFormat: "repeat" });
+                    if (queryString) {
+                        url = `${url}?${queryString}`;
+                    }
+                }
                 this._ws = new WebSocket(url, this._protocols, options);
                 this._ws!.binaryType = this._binaryType;
                 this._connectLock = false;
@@ -405,7 +409,7 @@ export class ReconnectingWebSocket {
         try {
             this._ws.close(code, reason);
             this._handleClose(new Events.CloseEvent(code, reason, this));
-        } catch (error) {
+        } catch (_error) {
             // ignore
         }
     }
@@ -430,7 +434,7 @@ export class ReconnectingWebSocket {
 
     private _handleOpen = (event: Event) => {
         this._debug("open event");
-        const { minUptime = DEFAULT.minUptime } = this._options;
+        const { minUptime = DEFAULT_OPTIONS.minUptime } = this._options;
 
         clearTimeout(this._connectTimeout);
         this._uptimeTimeout = setTimeout(() => this._acceptOpen(), minUptime);

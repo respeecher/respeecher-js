@@ -1,3 +1,3 @@
-export * from "./Voice.js";
-export * from "./SamplingParams.js";
 export * from "./Gender.js";
+export * from "./SamplingParams.js";
+export * from "./Voice.js";
