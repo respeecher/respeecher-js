@@ -65,10 +65,13 @@ jobs:
 
       - name: Publish to npm
         run: |
+          publish() {
+            pnpm publish --no-git-checks --provenance --access public "$@"
+          }
           if [[ ${GITHUB_REF} == *alpha* ]]; then
-            pnpm publish --provenance --access public --tag alpha
+            publish --tag alpha
           elif [[ ${GITHUB_REF} == *beta* ]]; then
-            pnpm publish --provenance --access public --tag beta
+            publish --tag beta
           else
-            pnpm publish --provenance --access public
+            publish
           fi
