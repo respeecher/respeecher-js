@@ -40,3 +40,33 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+  publish:
+    needs: [ compile, test ]
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # Required for OIDC
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+
+      - name: Set up node
+        uses: actions/setup-node@v6
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Publish to npm
+        run: |
+          if [[ ${GITHUB_REF} == *alpha* ]]; then
+            pnpm publish --provenance --access public --tag alpha
+          elif [[ ${GITHUB_REF} == *beta* ]]; then
+            pnpm publish --provenance --access public --tag beta
+          else
+            pnpm publish --provenance --access public
+          fi
