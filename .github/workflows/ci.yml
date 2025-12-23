@@ -66,10 +66,7 @@ jobs:
       - name: Publish to npm
         run: |
           publish() {
-            npm config set prefix '~/.local/'
-            mkdir -p ~/.local/bin
-            export PATH="$HOME/.local/bin/:$PATH"
-            npm install -g npm@latest
+            sudo npm install -g npm@latest
             pnpm publish --no-git-checks --provenance --access public "$@"
           }
           if [[ ${GITHUB_REF} == *alpha* ]]; then
