@@ -51,8 +51,8 @@ export function normalizeClientOptions<T extends BaseClientOptions = BaseClientO
         {
             "X-Fern-Language": "JavaScript",
             "X-Fern-SDK-Name": "@respeecher/respeecher-js",
-            "X-Fern-SDK-Version": "1.1.8",
-            "User-Agent": "@respeecher/respeecher-js/1.1.8",
+            "X-Fern-SDK-Version": "1.1.9",
+            "User-Agent": "@respeecher/respeecher-js/1.1.9",
             "X-Fern-Runtime": core.RUNTIME.type,
             "X-Fern-Runtime-Version": core.RUNTIME.version,
         },
